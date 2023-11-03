@@ -7,10 +7,8 @@
     <title>File Upload</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="shortcut icon" href="https:/noventiq.com/favicon.ico" type="image/x-icon">
-    <link
-      rel="stylesheet"
-      href="{{url_for('static', filename='css/style.css')}}"
-    />
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}" />
+    <script type="text/javascript" src="../static/actions.js"></script>
 </head>
 
 <body>
@@ -19,27 +17,29 @@
         <div class="container mt-5">
             <div class="wrapper">
                 <div class="text-center">
-                    <h1 class="text-dark">VTV Metadata Management</h1>
+                    <h1 class="text-success">VTV Metadata Management</h1>
                 </div>
                 <form method="POST" enctype="multipart/form-data" id="uploadForm">
-                    <div class="mb-3">
+                    <div class="mt-3">
                         <div class="text-center">
-                            <label for="fileInput" class="form-label text-dark">Tải lên video để trích xuất đặc điểm</label>
+                            <label for="fileInput" class="form-label text-dark">Tải lên video để trích xuất đặc
+                                điểm</label>
                             <input class="form-control border border-black" type="file" id="fileInput" name="file">
                         </div>
-    
+
                     </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-dark" id="uploadButton">Bấm vào để tải lên</button>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-success" id="uploadButton">Bấm vào để tải lên</button>
                     </div>
-    
+
                 </form>
-                <div class="text-center mt-3 mb-3">
+                <div class="text-center mt-5">
                     <h5 class="text-dark" id="uploadingText"></h5>
                 </div>
                 <div style="display: none; justify-content: center;" id="progress-area">
-    
-                    <div class="progress" style="width: 50vw; margin-top: 10px; margin-right: 1vw; background-color: grey;">
+
+                    <div class="progress"
+                        style="width: 50vw; margin-top: 10px; margin-right: 1vw; background-color: grey;">
                         <div class="progress-bar" id="progressBar" role="progressbar" aria-label="Basic example"
                             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
@@ -51,57 +51,6 @@
         <script src="https://cdn.socket.io/4.5.3/socket.io.min.js"
             integrity="sha384-WPFUvHkB1aHA5TDSZi6xtDgkF0wXJcIIxXhC6h8OT8EH3fC5PWro5pWJ1THjcfEi"
             crossorigin="anonymous"></script>
-
-        <script>
-
-            window.onload = function () {
-                const socket = io();
-                let socketid = undefined
-                socket.connect("https://localhost:25565");
-                let progressBar = document.getElementById("progressBar");
-
-                socket.on("connect", function () {
-                    console.log("Connected!");
-                    socketid = socket.id;
-                    console.log("ID: " + socketid);
-                })
-                socket.on("update progress", function (percent) {
-                    //do something with percent
-                    console.log("Got perecent: " + percent);
-                    progressBar.style.width = percent + "%";
-                    progressBar.innerHTML = percent + "%";
-                })
-
-                let mainForm = document.getElementById("uploadForm");
-                const fileInput = document.getElementById('fileInput');
-
-                mainForm.onsubmit = function (event) {
-                    event.preventDefault();
-
-                    const file = fileInput.files[0];
-                    console.log(file)
-
-                    document.getElementById('uploadButton').style.display = "none";
-                    document.getElementById('progress-area').style.display = "flex";
-                    document.getElementById('uploadingText').innerHTML = "Đang tải lên: " + file.name + ". Vui lòng chờ trong giây lát và không tắt cửa sổ.";
-
-                    fetch("/progress/" + socketid, {
-                        method: "POST",
-                        body: new FormData(mainForm)
-                    }).then(response => {
-                        setTimeout(function () {
-                            progressBar.style.width = "0%";
-                            document.getElementById('uploadButton').style.display = "inline";
-                            document.getElementById('progress-area').style.display = "none";
-                            document.getElementById('uploadingText').innerHTML = `${file.name} đã tải lên thành công!`;
-                            mainForm.reset()
-                        }, 2000);
-                    });
-                }
-            }
-        </script>
-
-
     </body>
 
 </html>
