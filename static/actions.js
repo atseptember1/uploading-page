@@ -3,6 +3,7 @@ window.onload = function () {
     let socketid = undefined
     socket.connect("https://localhost:5000");
     let progressBar = document.getElementById("progressBar");
+    let showProgress = false;
 
     socket.on("connect", function () {
         console.log("Connected!");
@@ -10,7 +11,7 @@ window.onload = function () {
         console.log("ID: " + socketid);
     })
     socket.on("update progress", function (percent) {
-        console.log("Got perecent: " + percent);
+        console.log("Got percent: " + percent);
         progressBar.style.width = percent + "%";
         progressBar.innerHTML = percent + "%";
     })
@@ -33,9 +34,10 @@ window.onload = function () {
             if (isAllowedFile) {
                 if (hasValidLength) {
                     document.getElementById('uploadButton').style.display = "none";
-                    document.getElementById('progress-area').style.display = "flex";
+                    // document.getElementById('progress-area').style.display = "flex";
                     document.getElementById('uploadingText').className = "text-info";
                     document.getElementById('uploadingText').innerHTML = "Đang tải lên: " + file.name + ". Vui lòng chờ trong giây lát và không tắt cửa sổ.";
+                    document.getElementById('spinner').style.display = "block";
 
                     fetch("/progress/" + socketid, {
                         method: "POST",
@@ -44,7 +46,8 @@ window.onload = function () {
                         setTimeout(function () {
                             progressBar.style.width = "0%";
                             document.getElementById('uploadButton').style.display = "inline";
-                            document.getElementById('progress-area').style.display = "none";
+                            document.getElementById('spinner').style.display = "none";
+                            // document.getElementById('progress-area').style.display = "none";
                             document.getElementById('uploadingText').className = "text-success";
                             document.getElementById('uploadingText').innerHTML = `${file.name} đã tải lên thành công!`;
                             mainForm.reset()
