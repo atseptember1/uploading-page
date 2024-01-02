@@ -36,7 +36,7 @@ window.onload = function () {
                     document.getElementById('uploadButton').style.display = "none";
                     // document.getElementById('progress-area').style.display = "flex";
                     document.getElementById('uploadingText').className = "text-info";
-                    document.getElementById('uploadingText').innerHTML = "Đang tải lên: " + file.name + ". Vui lòng chờ trong giây lát và không tắt cửa sổ.";
+                    document.getElementById('uploadingText').innerHTML = "Uploading: " + file.name + ". Please wait and DO NOT close this browser window.";
                     document.getElementById('spinner').style.display = "block";
 
                     fetch("/progress/" + socketid, {
@@ -49,20 +49,20 @@ window.onload = function () {
                             document.getElementById('spinner').style.display = "none";
                             // document.getElementById('progress-area').style.display = "none";
                             document.getElementById('uploadingText').className = "text-success";
-                            document.getElementById('uploadingText').innerHTML = `${file.name} đã tải lên thành công!`;
+                            document.getElementById('uploadingText').innerHTML = `${file.name} has been successfully uploaded!`;
                             mainForm.reset()
                         }, 2000);
                     });
                 } else {
-                    displayWarning("Tên video không được dài quá 80 ký tự. Xin hãy đổi lại tên video!")
+                    displayWarning("The video name exceeds 80 characters. Please rename video and upload again!")
                 }
 
             } else {
-                displayWarning("File bạn chọn không phải video. Xin hãy chọn lại!")
+                displayWarning("The uploading file must be a video file!")
             }
 
         } else {
-            displayWarning("Bạn chưa chọn video để tải lên!")
+            displayWarning("Please select a video for uploading!")
         }
     }
 }
